@@ -11,6 +11,9 @@ import Hero from './components/Hero';
 import AnalysisCard from './components/AnalysisCard';
 import OutfitGrid from './components/OutfitGrid';
 import TryOnViewer from './components/TryOnViewer';
+import Footer from './components/Footer';
+import LegalModal from './components/LegalModal';
+import CookieBanner from './components/CookieBanner';
 
 const App: React.FC = () => {
   const [appState, setAppState] = useState<AppState>(AppState.IDLE);
@@ -22,6 +25,9 @@ const App: React.FC = () => {
   const [loadingMessage, setLoadingMessage] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [applyMakeup, setApplyMakeup] = useState(false);
+  
+  // Legal State
+  const [legalType, setLegalType] = useState<'impressum' | 'datenschutz' | null>(null);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -133,9 +139,9 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A]">
+    <div className="min-h-screen bg-[#FDFDFD] text-[#1A1A1A] flex flex-col">
       <Navbar />
-      <main className="container mx-auto px-4 py-12">
+      <main className="container mx-auto px-4 py-12 flex-grow">
         {error && (
           <div className="mb-8 p-4 bg-red-50 text-red-700 rounded-lg flex justify-between items-center border border-red-100">
             <div className="flex items-center space-x-2"><Info className="w-5 h-5" /><span>{error}</span></div>
@@ -190,7 +196,7 @@ const App: React.FC = () => {
               {outfits.length > 0 ? (
                 <>
                   <OutfitGrid outfits={outfits} onTryOn={handleTryOn} selectedId={selectedOutfit?.id} />
-                  <footer className="mt-20 pt-10 border-t border-zinc-100">
+                  <div className="mt-20 pt-10 border-t border-zinc-100">
                     <div className="flex items-start space-x-4 bg-zinc-50 p-6 rounded-lg">
                       <ShieldCheck className="w-5 h-5 text-zinc-400 mt-1" />
                       <div>
@@ -200,7 +206,7 @@ const App: React.FC = () => {
                         </p>
                       </div>
                     </div>
-                  </footer>
+                  </div>
                 </>
               ) : (
                 <div className="py-20 text-center border-2 border-dashed rounded-xl">
@@ -211,6 +217,16 @@ const App: React.FC = () => {
           </div>
         )}
       </main>
+
+      <Footer onOpenLegal={(type) => setLegalType(type)} />
+      
+      <LegalModal 
+        isOpen={legalType !== null} 
+        type={legalType} 
+        onClose={() => setLegalType(null)} 
+      />
+
+      <CookieBanner />
     </div>
   );
 };
